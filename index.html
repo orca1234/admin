@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathtime-Admin</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f0; color: #1a1a18; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+header h1 { font-size: 18px; font-weight: 500; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+.badge-green { background: #eaf3de; color: #3b6d11; }
+.badge-gray { background: #e8e8e3; color: #5f5e5a; }
+.badge-blue { background: #e6f1fb; color: #185fa5; }
+.card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+label { display: block; font-size: 13px; color: #5f5e5a; margin-bottom: 4px; margin-top: 12px; }
+input[type="text"], input[type="number"] { width: 100%; padding: 8px 10px; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 14px; background: #fff; color: #1a1a18; font-family: inherit; }
+input:focus { outline: none; border-color: #378add; box-shadow: 0 0 0 2px #e6f1fb; }
+button.primary { padding: 8px 20px; background: #1a1a18; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+button.primary:hover { opacity: 0.85; }
+button.secondary { padding: 6px 14px; background: #fff; color: #1a1a18; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
+button.secondary:hover { background: #f5f5f0; }
+button.danger { padding: 6px 14px; background: #fff; color: #a32d2d; border: 0.5px solid #f09595; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
+button.danger:hover { background: #fcebeb; }
+.session-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.dot-on { background: #639922; }
+.dot-off { background: #888780; }
+.progress-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid #e8e8e3; }
+.progress-row:last-child { border-bottom: none; }
+.progress-name { font-size: 14px; font-weight: 500; min-width: 90px; }
+.bar-wrap { flex: 1; background: #f1efe8; border-radius: 4px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; background: #378add; border-radius: 4px; transition: width 0.4s; }
+.bar-label { font-size: 13px; color: #5f5e5a; min-width: 72px; text-align: right; }
+.prob-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid #e8e8e3; flex-wrap: wrap; }
+.prob-item:last-child { border-bottom: none; }
+.prob-num { font-size: 13px; color: #888780; min-width: 32px; }
+.prob-name { font-size: 14px; flex: 1; }
+.empty { color: #888780; font-size: 14px; padding: 1.5rem 0; text-align: center; }
+.status-line { font-size: 13px; }
+.ok { color: #3b6d11; }
+.err { color: #a32d2d; }
+.loading { color: #5f5e5a; }
+.drive-tip { font-size: 12px; color: #888780; margin-top: 4px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Mathtime-Admin</h1>
+    <a href="player.html" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
+  </header>
+
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <div class="card-title">세션</div>
+        <div class="session-row">
+          <span class="dot" id="dot"></span>
+          <span id="session-txt" style="font-size:14px;color:#5f5e5a"></span>
+          <button class="primary" id="session-btn" onclick="toggleSession()">시작</button>
+        </div>
+        <p style="font-size:12px;color:#888780;margin-top:8px">세션을 시작하면 참여자가 문제를 풀 수 있어요</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">문제 추가</div>
+        <label>문제 번호</label>
+        <input type="number" id="new-num" placeholder="1" style="width:80px">
+        <label>문제 이름</label>
+        <input type="text" id="new-name" placeholder="예: 1번 - 수열 문제">
+        <label>구글 드라이브 링크</label>
+        <input type="text" id="new-link" placeholder="https://drive.google.com/...">
+        <p class="drive-tip">드라이브에서 파일 우클릭 → 공유 → 링크 복사 후 붙여넣기<br>공유 설정을 "링크가 있는 모든 사용자"로 바꿔주세요</p>
+        <label>정답</label>
+        <input type="text" id="new-ans" placeholder="정답 입력">
+        <label>힌트 (선택)</label>
+        <input type="text" id="new-hint" placeholder="틀렸을 때 보여줄 힌트">
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+          <button class="primary" id="add-btn" onclick="addProblem()">추가</button>
+          <span class="status-line" id="add-status"></span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="min-height:200px">
+        <div class="card-title">실시간 상황</div>
+        <div id="progress-list"><p class="empty">아직 아무도 없어요</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">문제 목록 <span class="badge badge-gray" id="prob-count">0개</span></div>
+    <div id="prob-list"><p class="empty">등록된 문제가 없어요</p></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCiTZ2OXhz-iBxmj2jO7H4P1s3B-3FfifM",
+  authDomain: "mathtime-32f04.firebaseapp.com",
+  databaseURL: "https://mathtime-32f04-default-rtdb.firebaseio.com",
+  projectId: "mathtime-32f04",
+  storageBucket: "mathtime-32f04.firebasestorage.app",
+  messagingSenderId: "109741787829",
+  appId: "1:109741787829:web:7fb09ac5c7dbe0262accfc"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// session
+onValue(ref(db, 'session/active'), snap => {
+  const active = snap.val() || false;
+  document.getElementById('dot').className = 'dot ' + (active ? 'dot-on' : 'dot-off');
+  document.getElementById('session-txt').textContent = active ? '세션 진행 중' : '세션 없음';
+  document.getElementById('session-btn').textContent = active ? '종료' : '시작';
+});
+
+window.toggleSession = async () => {
+  const snap = await get(ref(db, 'session/active'));
+  await set(ref(db, 'session/active'), !snap.val());
+};
+
+// problems
+onValue(ref(db, 'problems'), snap => {
+  const data = snap.val() || {};
+  const probs = Object.values(data).sort((a,b) => a.num - b.num);
+  document.getElementById('prob-count').textContent = probs.length + '개';
+  const el = document.getElementById('prob-list');
+  if (!probs.length) { el.innerHTML = '<p class="empty">등록된 문제가 없어요</p>'; return; }
+  el.innerHTML = probs.map(p => `
+    <div class="prob-item">
+      <span class="prob-num">${p.num}번</span>
+      <span class="prob-name">${p.name}</span>
+      <span class="badge badge-gray" style="margin-right:4px">정답: ${p.answer}</span>
+      ${p.hint ? `<span class="badge badge-blue" style="margin-right:4px">힌트 있음</span>` : ''}
+      <span class="badge ${p.fileLink ? 'badge-green' : 'badge-gray'}" style="margin-right:4px">${p.fileLink ? '링크 있음' : '링크 없음'}</span>
+      <button class="danger" onclick="deleteProblem('${p.id}')">삭제</button>
+    </div>
+  `).join('');
+});
+
+window.deleteProblem = async (id) => {
+  if (!confirm('삭제할까요?')) return;
+  await remove(ref(db, 'problems/' + id));
+};
+
+// players
+onValue(ref(db, 'players'), snap => {
+  const data = snap.val() || {};
+  const el = document.getElementById('progress-list');
+  const names = Object.keys(data);
+  if (!names.length) { el.innerHTML = '<p class="empty">아직 아무도 없어요</p>'; return; }
+  get(ref(db, 'problems')).then(ps => {
+    const total = ps.val() ? Object.keys(ps.val()).length : 0;
+    el.innerHTML = names.map(name => {
+      const solved = data[name].solved || 0;
+      const pct = total ? Math.round(solved / total * 100) : 0;
+      return `<div class="progress-row">
+        <span class="progress-name">${name}</span>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <span class="bar-label">${solved}/${total} (${pct}%)</span>
+      </div>`;
+    }).join('');
+  });
+});
+
+window.addProblem = async () => {
+  const num = parseInt(document.getElementById('new-num').value);
+  const name = document.getElementById('new-name').value.trim();
+  const link = document.getElementById('new-link').value.trim();
+  const ans = document.getElementById('new-ans').value.trim();
+  const hint = document.getElementById('new-hint').value.trim();
+  const status = document.getElementById('add-status');
+
+  if (!num || !name || !ans) { status.className='status-line err'; status.textContent='번호, 이름, 정답은 필수예요'; return; }
+
+  status.className='status-line loading'; status.textContent='저장 중...';
+  const id = 'prob_' + num;
+  await set(ref(db, 'problems/' + id), {
+    id, num, name,
+    answer: ans.toLowerCase().replace(/\s/g,''),
+    hint,
+    fileLink: link
+  });
+
+  document.getElementById('new-num').value='';
+  document.getElementById('new-name').value='';
+  document.getElementById('new-link').value='';
+  document.getElementById('new-ans').value='';
+  document.getElementById('new-hint').value='';
+  status.className='status-line ok'; status.textContent=`${num}번 추가됨!`;
+  setTimeout(()=>status.textContent='', 2500);
+};
+</script>
+</body>
+</html>
