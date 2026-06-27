@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mathtime-Admin</title>
+<title>어드민 - 문제 동아리</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f0; color: #1a1a18; min-height: 100vh; }
@@ -47,12 +47,35 @@ button.danger:hover { background: #fcebeb; }
 .err { color: #a32d2d; }
 .loading { color: #5f5e5a; }
 .drive-tip { font-size: 12px; color: #888780; margin-top: 4px; line-height: 1.5; }
+.pw-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.pw-card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; text-align: center; }
+.pw-icon { font-size: 36px; margin-bottom: 12px; }
+.pw-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+.pw-sub { font-size: 14px; color: #5f5e5a; margin-bottom: 1.25rem; }
+input[type="password"] { width: 100%; padding: 10px 12px; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 15px; font-family: inherit; background: #fff; color: #1a1a18; text-align: center; letter-spacing: 4px; }
+input[type="password"]:focus { outline: none; border-color: #378add; box-shadow: 0 0 0 2px #e6f1fb; }
+button.pw-btn { width: 100%; padding: 10px; background: #1a1a18; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 10px; }
+button.pw-btn:hover { opacity: 0.85; }
+.pw-err { padding: 8px 12px; background: #fcebeb; color: #a32d2d; border-radius: 8px; font-size: 13px; margin-top: 10px; display: none; }
 </style>
 </head>
 <body>
-<div class="app">
+
+<!-- 비밀번호 화면 -->
+<div class="pw-wrap" id="pw-screen">
+  <div class="pw-card">
+    <div class="pw-icon">🔒</div>
+    <div class="pw-title">어드민 로그인</div>
+    <div class="pw-sub">비밀번호를 입력하세요</div>
+    <input type="password" id="pw-input" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">확인</button>
+    <div class="pw-err" id="pw-err">비밀번호가 틀렸어요</div>
+  </div>
+</div>
+
+<div class="app" id="admin-screen" style="display:none">
   <header>
-    <h1>Mathtime-Admin</h1>
+    <h1>📚 문제 동아리 — 어드민</h1>
     <a href="player.html" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
   </header>
 
@@ -90,7 +113,7 @@ button.danger:hover { background: #fcebeb; }
 
     <div>
       <div class="card" style="min-height:200px">
-        <div class="card-title">실시간 상황</div>
+        <div class="card-title">참여자 현황</div>
         <div id="progress-list"><p class="empty">아직 아무도 없어요</p></div>
       </div>
     </div>
@@ -101,6 +124,21 @@ button.danger:hover { background: #fcebeb; }
     <div id="prob-list"><p class="empty">등록된 문제가 없어요</p></div>
   </div>
 </div>
+
+<script>
+const PW = '150122';
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  if (val === PW) {
+    document.getElementById('pw-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = '';
+  } else {
+    document.getElementById('pw-err').style.display = '';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
