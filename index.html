@@ -64,10 +64,9 @@ button.pw-btn:hover { opacity: 0.85; }
 <!-- 비밀번호 화면 -->
 <div class="pw-wrap" id="pw-screen">
   <div class="pw-card">
-    <div class="pw-icon">🔒</div>
     <div class="pw-title">어드민 로그인</div>
     <div class="pw-sub">비밀번호를 입력하세요</div>
-    <input type="password" id="pw-input" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
     <button class="pw-btn" onclick="checkPw()">확인</button>
     <div class="pw-err" id="pw-err">비밀번호가 틀렸어요</div>
   </div>
