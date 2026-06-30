@@ -6,75 +6,106 @@
 <title>Mathtime-Admin</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f0; color: #1a1a18; min-height: 100vh; }
+:root {
+  --bg: #f5f5f0; --card: #fff; --text: #1a1a18; --text-sub: #5f5e5a; --text-muted: #888780;
+  --border: #d3d1c7; --border-strong: #b4b2a9; --input-bg: #fff;
+  --accent: #378add; --accent-bg: #e6f1fb; --accent-text: #185fa5;
+  --green-bg: #eaf3de; --green-text: #3b6d11;
+  --red-bg: #fcebeb; --red-text: #a32d2d;
+  --gray-bg: #e8e8e3; --hover-bg: #f5f5f0; --divider: #e8e8e3;
+}
+[data-theme="dark"] {
+  --bg: #1a1a18; --card: #242422; --text: #f0efe9; --text-sub: #b8b6ad; --text-muted: #8a887f;
+  --border: #3a3935; --border-strong: #4a4944; --input-bg: #2c2b28;
+  --accent: #5b9fe0; --accent-bg: #1d2c3a; --accent-text: #7ab4ec;
+  --green-bg: #1f2e16; --green-text: #8bc457;
+  --red-bg: #321a1a; --red-text: #e08080;
+  --gray-bg: #333230; --hover-bg: #2c2b28; --divider: #3a3935;
+}
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; }
 .app { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 8px; flex-wrap: wrap; }
 header h1 { font-size: 18px; font-weight: 500; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.theme-btn { width: 32px; height: 32px; border-radius: 8px; border: 0.5px solid var(--border-strong); background: var(--card); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.theme-btn:hover { background: var(--hover-bg); }
 .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
-.badge-green { background: #eaf3de; color: #3b6d11; }
-.badge-gray { background: #e8e8e3; color: #5f5e5a; }
-.badge-blue { background: #e6f1fb; color: #185fa5; }
-.card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.badge-green { background: var(--green-bg); color: var(--green-text); }
+.badge-gray { background: var(--gray-bg); color: var(--text-sub); }
+.badge-blue { background: var(--accent-bg); color: var(--accent-text); }
+.card { background: var(--card); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
 .card-title { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
-label { display: block; font-size: 13px; color: #5f5e5a; margin-bottom: 4px; margin-top: 12px; }
-input[type="text"], input[type="number"] { width: 100%; padding: 8px 10px; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 14px; background: #fff; color: #1a1a18; font-family: inherit; }
-input:focus { outline: none; border-color: #378add; box-shadow: 0 0 0 2px #e6f1fb; }
-button.primary { padding: 8px 20px; background: #1a1a18; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 4px; margin-top: 12px; }
+input[type="text"], input[type="number"], select { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; background: var(--input-bg); color: var(--text); font-family: inherit; }
+input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+button.primary { padding: 8px 20px; background: var(--text); color: var(--bg); border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
 button.primary:hover { opacity: 0.85; }
-button.secondary { padding: 6px 14px; background: #fff; color: #1a1a18; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
-button.secondary:hover { background: #f5f5f0; }
-button.danger { padding: 6px 14px; background: #fff; color: #a32d2d; border: 0.5px solid #f09595; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
-button.danger:hover { background: #fcebeb; }
+button.secondary { padding: 6px 14px; background: var(--card); color: var(--text); border: 0.5px solid var(--border-strong); border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
+button.secondary:hover { background: var(--hover-bg); }
+button.danger { padding: 6px 14px; background: var(--card); color: var(--red-text); border: 0.5px solid var(--red-text); border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
+button.danger:hover { background: var(--red-bg); }
 .session-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
 .dot-on { background: #639922; }
-.dot-off { background: #888780; }
-.progress-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid #e8e8e3; }
+.dot-off { background: var(--text-muted); }
+.progress-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--divider); flex-wrap: wrap; }
 .progress-row:last-child { border-bottom: none; }
-.progress-name { font-size: 14px; font-weight: 500; min-width: 90px; }
-.bar-wrap { flex: 1; background: #f1efe8; border-radius: 4px; height: 8px; overflow: hidden; }
-.bar-fill { height: 100%; background: #378add; border-radius: 4px; transition: width 0.4s; }
-.bar-label { font-size: 13px; color: #5f5e5a; min-width: 72px; text-align: right; }
-.prob-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid #e8e8e3; flex-wrap: wrap; }
+.progress-name { font-size: 14px; font-weight: 500; min-width: 80px; }
+.bar-wrap { flex: 1; min-width: 60px; background: var(--gray-bg); border-radius: 4px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s; }
+.bar-label { font-size: 13px; color: var(--text-sub); min-width: 64px; text-align: right; }
+.msg-btn { padding: 4px 10px; background: var(--card); color: var(--accent-text); border: 0.5px solid var(--accent); border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; }
+.msg-btn:hover { background: var(--accent-bg); }
+.prob-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid var(--divider); flex-wrap: wrap; }
 .prob-item:last-child { border-bottom: none; }
-.prob-num { font-size: 13px; color: #888780; min-width: 32px; }
+.prob-num { font-size: 13px; color: var(--text-muted); min-width: 32px; }
 .prob-name { font-size: 14px; flex: 1; }
-.empty { color: #888780; font-size: 14px; padding: 1.5rem 0; text-align: center; }
+.empty { color: var(--text-muted); font-size: 14px; padding: 1.5rem 0; text-align: center; }
 .status-line { font-size: 13px; }
-.ok { color: #3b6d11; }
-.err { color: #a32d2d; }
-.loading { color: #5f5e5a; }
-.drive-tip { font-size: 12px; color: #888780; margin-top: 4px; line-height: 1.5; }
+.ok { color: var(--green-text); }
+.err { color: var(--red-text); }
+.loading { color: var(--text-sub); }
+.drive-tip { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
 .pw-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-.pw-card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; text-align: center; }
+.pw-card { background: var(--card); border: 0.5px solid var(--border); border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; text-align: center; }
 .pw-icon { font-size: 36px; margin-bottom: 12px; }
 .pw-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
-.pw-sub { font-size: 14px; color: #5f5e5a; margin-bottom: 1.25rem; }
-input[type="password"] { width: 100%; padding: 10px 12px; border: 0.5px solid #b4b2a9; border-radius: 8px; font-size: 15px; font-family: inherit; background: #fff; color: #1a1a18; text-align: center; letter-spacing: 4px; }
-input[type="password"]:focus { outline: none; border-color: #378add; box-shadow: 0 0 0 2px #e6f1fb; }
-button.pw-btn { width: 100%; padding: 10px; background: #1a1a18; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 10px; }
+.pw-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 1.25rem; }
+input[type="password"] { width: 100%; padding: 10px 12px; border: 0.5px solid var(--border-strong); border-radius: 8px; font-size: 15px; font-family: inherit; background: var(--input-bg); color: var(--text); text-align: center; letter-spacing: 4px; }
+input[type="password"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+button.pw-btn { width: 100%; padding: 10px; background: var(--text); color: var(--bg); border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 10px; }
 button.pw-btn:hover { opacity: 0.85; }
-.pw-err { padding: 8px 12px; background: #fcebeb; color: #a32d2d; border-radius: 8px; font-size: 13px; margin-top: 10px; display: none; }
+.pw-err { padding: 8px 12px; background: var(--red-bg); color: var(--red-text); border-radius: 8px; font-size: 13px; margin-top: 10px; display: none; }
+
+/* 메시지 모달 */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--card); border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 360px; }
+.modal-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+.modal-actions { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
 </style>
 </head>
 <body>
 
-<!-- 비밀번호 화면 -->
 <div class="pw-wrap" id="pw-screen">
   <div class="pw-card">
+    <div class="pw-title">ADMIN LOGIN</div>
     <div class="pw-sub">비밀번호를 입력하세요</div>
     <input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
     <button class="pw-btn" onclick="checkPw()">확인</button>
-    <div class="pw-err" id="pw-err">비밀번호 오류</div>
+    <div class="pw-err" id="pw-err">비밀번호가 틀렸어요</div>
   </div>
 </div>
 
 <div class="app" id="admin-screen" style="display:none">
   <header>
     <h1>Mathtime-Admin</h1>
-    <a href="https://orca1234.github.io/quiz-player" target="_blank"></a>
+    <div class="header-actions">
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">🌙</button>
+      <a href="https://orca1234.github.io/quiz-player" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
+    </div>
   </header>
 
   <div class="grid2">
@@ -83,10 +114,10 @@ button.pw-btn:hover { opacity: 0.85; }
         <div class="card-title">세션</div>
         <div class="session-row">
           <span class="dot" id="dot"></span>
-          <span id="session-txt" style="font-size:14px;color:#5f5e5a"></span>
+          <span id="session-txt" style="font-size:14px;color:var(--text-sub)"></span>
           <button class="primary" id="session-btn" onclick="toggleSession()">시작</button>
         </div>
-        <p style="font-size:12px;color:#888780;margin-top:8px">세션을 시작하면 참여자가 문제를 풀 수 있어요</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">세션을 시작하면 참여자가 문제를 풀 수 있어요</p>
       </div>
 
       <div class="card">
@@ -114,12 +145,34 @@ button.pw-btn:hover { opacity: 0.85; }
         <div class="card-title">참여자 현황</div>
         <div id="progress-list"><p class="empty">아직 아무도 없어요</p></div>
       </div>
+
+      <div class="card">
+        <div class="card-title">전체 공지 보내기</div>
+        <label>메시지</label>
+        <input type="text" id="broadcast-input" placeholder="모든 참여자에게 보낼 메시지">
+        <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+          <button class="primary" onclick="sendBroadcast()">전체 전송</button>
+          <span class="status-line" id="broadcast-status"></span>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">문제 목록 <span class="badge badge-gray" id="prob-count">0개</span></div>
     <div id="prob-list"><p class="empty">등록된 문제가 없어요</p></div>
+  </div>
+</div>
+
+<!-- 개인 메시지 모달 -->
+<div class="modal-overlay" id="msg-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="msg-modal-title">메시지 보내기</div>
+    <input type="text" id="msg-modal-input" placeholder="메시지를 입력하세요">
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeMsgModal()">취소</button>
+      <button class="primary" onclick="sendDirectMessage()">보내기</button>
+    </div>
   </div>
 </div>
 
@@ -136,11 +189,23 @@ function checkPw() {
     document.getElementById('pw-input').focus();
   }
 }
+
+// 테마
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('quiz-admin-theme', theme);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+applyTheme(localStorage.getItem('quiz-admin-theme') || 'light');
 </script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { getDatabase, ref, set, get, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCiTZ2OXhz-iBxmj2jO7H4P1s3B-3FfifM",
@@ -154,8 +219,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+let currentPlayerNames = [];
 
-// session
 onValue(ref(db, 'session/active'), snap => {
   const active = snap.val() || false;
   document.getElementById('dot').className = 'dot ' + (active ? 'dot-on' : 'dot-off');
@@ -168,7 +233,6 @@ window.toggleSession = async () => {
   await set(ref(db, 'session/active'), !snap.val());
 };
 
-// problems
 onValue(ref(db, 'problems'), snap => {
   const data = snap.val() || {};
   const probs = Object.values(data).sort((a,b) => a.num - b.num);
@@ -192,9 +256,9 @@ window.deleteProblem = async (id) => {
   await remove(ref(db, 'problems/' + id));
 };
 
-// players
 onValue(ref(db, 'players'), snap => {
   const data = snap.val() || {};
+  currentPlayerNames = Object.keys(data);
   const el = document.getElementById('progress-list');
   const names = Object.keys(data);
   if (!names.length) { el.innerHTML = '<p class="empty">아직 아무도 없어요</p>'; return; }
@@ -206,7 +270,8 @@ onValue(ref(db, 'players'), snap => {
       return `<div class="progress-row">
         <span class="progress-name">${name}</span>
         <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <span class="bar-label">${solved}/${total} (${pct}%)</span>
+        <span class="bar-label">${solved}/${total}</span>
+        <button class="msg-btn" onclick="openMsgModal('${name}')">메시지</button>
       </div>`;
     }).join('');
   });
@@ -238,6 +303,36 @@ window.addProblem = async () => {
   document.getElementById('new-hint').value='';
   status.className='status-line ok'; status.textContent=`${num}번 추가됨!`;
   setTimeout(()=>status.textContent='', 2500);
+};
+
+// 메시지 보내기
+let msgTarget = null;
+window.openMsgModal = (name) => {
+  msgTarget = name;
+  document.getElementById('msg-modal-title').textContent = name + '님에게 메시지 보내기';
+  document.getElementById('msg-modal-input').value = '';
+  document.getElementById('msg-modal').classList.add('show');
+};
+window.closeMsgModal = () => {
+  document.getElementById('msg-modal').classList.remove('show');
+};
+window.sendDirectMessage = async () => {
+  const text = document.getElementById('msg-modal-input').value.trim();
+  if (!text || !msgTarget) return;
+  await push(ref(db, 'messages/' + msgTarget), { text, time: Date.now() });
+  closeMsgModal();
+};
+
+window.sendBroadcast = async () => {
+  const input = document.getElementById('broadcast-input');
+  const status = document.getElementById('broadcast-status');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!currentPlayerNames.length) { status.className='status-line err'; status.textContent='참여자가 없어요'; return; }
+  await Promise.all(currentPlayerNames.map(name => push(ref(db, 'messages/' + name), { text, time: Date.now() })));
+  input.value = '';
+  status.className='status-line ok'; status.textContent='전송됨!';
+  setTimeout(()=>status.textContent='', 2000);
 };
 </script>
 </body>
