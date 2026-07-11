@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mathtime-Admin</title>
+<title>어드민 - Mathtime</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -91,11 +91,12 @@ button.pw-btn:hover { opacity: 0.85; }
 
 <div class="pw-wrap" id="pw-screen">
   <div class="pw-card">
-    <div class="pw-title">ADMIN LOGIN</div>
+    
+    <div class="pw-title">어드민 로그인</div>
     <div class="pw-sub">비밀번호를 입력하세요</div>
     <input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
     <button class="pw-btn" onclick="checkPw()">확인</button>
-    <div class="pw-err" id="pw-err">비밀번호가 틀렸어요</div>
+    <div class="pw-err" id="pw-err">비밀번호 오류</div>
   </div>
 </div>
 
@@ -103,8 +104,8 @@ button.pw-btn:hover { opacity: 0.85; }
   <header>
     <h1>Mathtime-Admin</h1>
     <div class="header-actions">
-      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">🌙</button>
-      <a href="https://orca1234.github.io/player" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">다크</button>
+      <a href="https://orca1234.github.io/player" target="_blank"><button class="secondary">playersite</button></a>
     </div>
   </header>
 
@@ -193,7 +194,7 @@ function checkPw() {
 // 테마
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '라이트' : '다크';
   localStorage.setItem('quiz-admin-theme', theme);
 }
 function toggleTheme() {
@@ -301,7 +302,7 @@ window.addProblem = async () => {
   document.getElementById('new-link').value='';
   document.getElementById('new-ans').value='';
   document.getElementById('new-hint').value='';
-  status.className='status-line ok'; status.textContent=`${num}번 추가됨!`;
+  status.className='status-line ok'; status.textContent=`${num}번 추가됨`;
   setTimeout(()=>status.textContent='', 2500);
 };
 
@@ -331,7 +332,7 @@ window.sendBroadcast = async () => {
   if (!currentPlayerNames.length) { status.className='status-line err'; status.textContent='참여자가 없어요'; return; }
   await Promise.all(currentPlayerNames.map(name => push(ref(db, 'messages/' + name), { text, time: Date.now() })));
   input.value = '';
-  status.className='status-line ok'; status.textContent='전송됨!';
+  status.className='status-line ok'; status.textContent='전송됨';
   setTimeout(()=>status.textContent='', 2000);
 };
 </script>
