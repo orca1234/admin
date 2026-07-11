@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>어드민 - Mathtime</title>
+<title>Mathtime-Admin</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -105,7 +105,7 @@ button.pw-btn:hover { opacity: 0.85; }
     <h1>Mathtime-Admin</h1>
     <div class="header-actions">
       <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">다크</button>
-      <a href="https://orca1234.github.io/player" target="_blank"><button class="secondary">playersite</button></a>
+      <a href="https://orca1234.github.io/player" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
     </div>
   </header>
 
@@ -267,11 +267,12 @@ onValue(ref(db, 'players'), snap => {
     const total = ps.val() ? Object.keys(ps.val()).length : 0;
     el.innerHTML = names.map(name => {
       const solved = data[name].solved || 0;
-      const pct = total ? Math.round(solved / total * 100) : 0;
+      const pct = (total > 0) ? Math.round(solved / total * 100) : 0;
+      const label = total > 0 ? `${solved}/${total}` : '문제 없음';
       return `<div class="progress-row">
         <span class="progress-name">${name}</span>
         <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <span class="bar-label">${solved}/${total}</span>
+        <span class="bar-label">${label}</span>
         <button class="msg-btn" onclick="openMsgModal('${name}')">메시지</button>
       </div>`;
     }).join('');
@@ -302,7 +303,7 @@ window.addProblem = async () => {
   document.getElementById('new-link').value='';
   document.getElementById('new-ans').value='';
   document.getElementById('new-hint').value='';
-  status.className='status-line ok'; status.textContent=`${num}번 추가됨`;
+  status.className='status-line ok'; status.textContent=`${num}번 추가됨!`;
   setTimeout(()=>status.textContent='', 2500);
 };
 
