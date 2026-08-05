@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mathtime-Admin</title>
+<title>MathtimeAdmin</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -12,7 +12,7 @@
   --accent: #378add; --accent-bg: #e6f1fb; --accent-text: #185fa5;
   --green-bg: #eaf3de; --green-text: #3b6d11;
   --red-bg: #fcebeb; --red-text: #a32d2d;
-  --gray-bg: #e8e8e3; --hover-bg: #f5f5f0; --divider: #e8e8e3;
+  --gray-bg: #e8e8e3; --hover-bg: #f1efe8; --divider: #e8e8e3;
 }
 [data-theme="dark"] {
   --bg: #1a1a18; --card: #242422; --text: #f0efe9; --text-sub: #b8b6ad; --text-muted: #8a887f;
@@ -23,12 +23,11 @@
   --gray-bg: #333230; --hover-bg: #2c2b28; --divider: #3a3935;
 }
 body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; }
-.app { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
+.app { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.5rem; }
 header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 8px; flex-wrap: wrap; }
 header h1 { font-size: 18px; font-weight: 500; }
 .header-actions { display: flex; gap: 8px; align-items: center; }
-.theme-btn { width: 32px; height: 32px; border-radius: 8px; border: 0.5px solid var(--border-strong); background: var(--card); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.theme-btn:hover { background: var(--hover-bg); }
+.theme-btn { padding: 6px 12px; border-radius: 8px; border: 0.5px solid var(--border-strong); background: var(--card); color: var(--text); cursor: pointer; font-size: 13px; font-family: inherit; }
 .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
 .badge-green { background: var(--green-bg); color: var(--green-text); }
 .badge-gray { background: var(--gray-bg); color: var(--text-sub); }
@@ -36,7 +35,9 @@ header h1 { font-size: 18px; font-weight: 500; }
 .card { background: var(--card); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
 .card-title { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+@media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
 label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 4px; margin-top: 12px; }
 input[type="text"], input[type="number"], select { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; background: var(--input-bg); color: var(--text); font-family: inherit; }
 input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
@@ -68,100 +69,130 @@ button.danger:hover { background: var(--red-bg); }
 .err { color: var(--red-text); }
 .loading { color: var(--text-sub); }
 .drive-tip { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--card); border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+.modal-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+.modal-actions { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
+.folder-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: var(--accent-bg); color: var(--accent-text); border-radius: 6px; font-size: 12px; margin: 2px; }
+.folder-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--divider); }
+.folder-item:last-child { border-bottom: none; }
+.folder-name { font-size: 14px; font-weight: 500; }
+.folder-count { font-size: 12px; color: var(--text-muted); }
+.checkbox-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.checkbox-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+.folder-select-item { padding: 10px 12px; border: 0.5px solid var(--border); border-radius: 8px; cursor: pointer; margin-bottom: 6px; font-size: 14px; }
+.folder-select-item:hover { background: var(--hover-bg); }
+.folder-select-item.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); }
 .pw-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
 .pw-card { background: var(--card); border: 0.5px solid var(--border); border-radius: 12px; padding: 2rem; width: 100%; max-width: 360px; text-align: center; }
-.pw-icon { font-size: 36px; margin-bottom: 12px; }
 .pw-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
 .pw-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 1.25rem; }
 input[type="password"] { width: 100%; padding: 10px 12px; border: 0.5px solid var(--border-strong); border-radius: 8px; font-size: 15px; font-family: inherit; background: var(--input-bg); color: var(--text); text-align: center; letter-spacing: 4px; }
-input[type="password"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
 button.pw-btn { width: 100%; padding: 10px; background: var(--text); color: var(--bg); border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 10px; }
-button.pw-btn:hover { opacity: 0.85; }
 .pw-err { padding: 8px 12px; background: var(--red-bg); color: var(--red-text); border-radius: 8px; font-size: 13px; margin-top: 10px; display: none; }
-
-/* 메시지 모달 */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
-.modal-overlay.show { display: flex; }
-.modal-box { background: var(--card); border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 360px; }
-.modal-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
-.modal-actions { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
 </style>
 </head>
 <body>
 
 <div class="pw-wrap" id="pw-screen">
   <div class="pw-card">
-    
-    <div class="pw-title">어드민 로그인</div>
+    <div class="pw-title">MathtimeAdmin</div>
     <div class="pw-sub">비밀번호를 입력하세요</div>
     <input type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
     <button class="pw-btn" onclick="checkPw()">확인</button>
-    <div class="pw-err" id="pw-err">비밀번호 오류</div>
+    <div class="pw-err" id="pw-err">비밀번호가 틀렸어요</div>
   </div>
 </div>
 
 <div class="app" id="admin-screen" style="display:none">
   <header>
-    <h1>Mathtime-Admin</h1>
+    <h1>MathtimeAdmin</h1>
     <div class="header-actions">
-      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">다크</button>
-      <a href="https://orca1234.github.io/player" target="_blank"><button class="secondary">참여자 페이지 열기 ↗</button></a>
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">다크</button>
+      <a href="https://mathtime.kro.kr" target="_blank"><button class="secondary">참여자 페이지 ↗</button></a>
     </div>
   </header>
 
-  <div class="grid2">
+  <div class="grid3">
+    <!-- 세션 -->
     <div>
       <div class="card">
         <div class="card-title">세션</div>
         <div class="session-row">
           <span class="dot" id="dot"></span>
           <span id="session-txt" style="font-size:14px;color:var(--text-sub)"></span>
-          <button class="primary" id="session-btn" onclick="toggleSession()">시작</button>
+          <button class="primary" id="session-btn" onclick="handleSessionBtn()">시작</button>
         </div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">세션을 시작하면 참여자가 문제를 풀 수 있어요</p>
+        <div id="session-folder-info" style="font-size:13px;color:var(--text-sub);margin-top:8px;display:none"></div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">세션 시작 시 폴더를 선택해요</p>
       </div>
 
       <div class="card">
-        <div class="card-title">문제 추가</div>
-        <label>문제 번호</label>
-        <input type="number" id="new-num" placeholder="1" style="width:80px">
-        <label>문제 이름</label>
-        <input type="text" id="new-name" placeholder="예: 1번 - 수열 문제">
-        <label>구글 드라이브 링크</label>
-        <input type="text" id="new-link" placeholder="https://drive.google.com/...">
-        <p class="drive-tip">드라이브에서 파일 우클릭 → 공유 → 링크 복사 후 붙여넣기<br>공유 설정을 "링크가 있는 모든 사용자"로 바꿔주세요</p>
-        <label>정답</label>
-        <input type="text" id="new-ans" placeholder="정답 입력">
-        <label>힌트 (선택)</label>
-        <input type="text" id="new-hint" placeholder="틀렸을 때 보여줄 힌트">
-        <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
-          <button class="primary" id="add-btn" onclick="addProblem()">추가</button>
-          <span class="status-line" id="add-status"></span>
+        <div class="card-title">전체 공지</div>
+        <input type="text" id="broadcast-input" placeholder="모든 참여자에게 보낼 메시지">
+        <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+          <button class="primary" onclick="sendBroadcast()">전송</button>
+          <span class="status-line" id="broadcast-status"></span>
         </div>
       </div>
     </div>
 
+    <!-- 참여자 현황 -->
     <div>
       <div class="card" style="min-height:200px">
         <div class="card-title">참여자 현황</div>
         <div id="progress-list"><p class="empty">아직 아무도 없어요</p></div>
       </div>
+    </div>
 
+    <!-- 폴더 관리 -->
+    <div>
       <div class="card">
-        <div class="card-title">전체 공지 보내기</div>
-        <label>메시지</label>
-        <input type="text" id="broadcast-input" placeholder="모든 참여자에게 보낼 메시지">
-        <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
-          <button class="primary" onclick="sendBroadcast()">전체 전송</button>
-          <span class="status-line" id="broadcast-status"></span>
+        <div class="card-title">폴더 관리</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="new-folder-name" placeholder="폴더 이름 (예: 1회차)">
+          <button class="primary" onclick="addFolder()" style="white-space:nowrap">추가</button>
         </div>
+        <div id="folder-list" style="margin-top:12px"><p class="empty">폴더가 없어요</p></div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">문제 목록 <span class="badge badge-gray" id="prob-count">0개</span></div>
-    <div id="prob-list"><p class="empty">등록된 문제가 없어요</p></div>
+  <div class="grid2">
+    <!-- 문제 추가 -->
+    <div class="card">
+      <div class="card-title">문제 추가</div>
+      <label>문제 번호</label>
+      <input type="number" id="new-num" placeholder="1" style="width:80px">
+      <label>문제 이름</label>
+      <input type="text" id="new-name" placeholder="예: 1번 - 수열 문제">
+      <label>구글 드라이브 링크</label>
+      <input type="text" id="new-link" placeholder="https://drive.google.com/...">
+      <p class="drive-tip">우클릭 → 공유 → "링크가 있는 모든 사용자"로 설정 후 링크 복사</p>
+      <label>폴더 선택 (복수 선택 가능)</label>
+      <div id="folder-checkbox-list" class="checkbox-list"><p style="font-size:13px;color:var(--text-muted)">먼저 폴더를 만들어주세요</p></div>
+      <label>정답</label>
+      <input type="text" id="new-ans" placeholder="정답 입력">
+      <label>힌트 (선택)</label>
+      <input type="text" id="new-hint" placeholder="틀렸을 때 보여줄 힌트">
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+        <button class="primary" onclick="addProblem()">추가</button>
+        <span class="status-line" id="add-status"></span>
+      </div>
+    </div>
+
+    <!-- 문제 목록 -->
+    <div class="card">
+      <div class="card-title">문제 목록 <span class="badge badge-gray" id="prob-count">0개</span></div>
+      <div style="margin-bottom:10px">
+        <select id="filter-folder" onchange="renderProblems()">
+          <option value="">전체 보기</option>
+        </select>
+      </div>
+      <div id="prob-list"><p class="empty">등록된 문제가 없어요</p></div>
+    </div>
   </div>
 </div>
 
@@ -173,6 +204,18 @@ button.pw-btn:hover { opacity: 0.85; }
     <div class="modal-actions">
       <button class="secondary" onclick="closeMsgModal()">취소</button>
       <button class="primary" onclick="sendDirectMessage()">보내기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 세션 폴더 선택 모달 -->
+<div class="modal-overlay" id="folder-modal">
+  <div class="modal-box">
+    <div class="modal-title">세션에서 사용할 폴더 선택</div>
+    <div id="folder-select-list"></div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeFolderModal()">취소</button>
+      <button class="primary" onclick="startSessionWithFolder()">세션 시작</button>
     </div>
   </div>
 </div>
@@ -190,16 +233,13 @@ function checkPw() {
     document.getElementById('pw-input').focus();
   }
 }
-
-// 테마
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   document.getElementById('theme-toggle').textContent = theme === 'dark' ? '라이트' : '다크';
   localStorage.setItem('quiz-admin-theme', theme);
 }
 function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  applyTheme(current === 'dark' ? 'light' : 'dark');
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }
 applyTheme(localStorage.getItem('quiz-admin-theme') || 'light');
 </script>
@@ -220,64 +260,125 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let currentPlayerNames = [];
 
-onValue(ref(db, 'session/active'), snap => {
-  const active = snap.val() || false;
-  document.getElementById('dot').className = 'dot ' + (active ? 'dot-on' : 'dot-off');
-  document.getElementById('session-txt').textContent = active ? '세션 진행 중' : '세션 없음';
-  document.getElementById('session-btn').textContent = active ? '종료' : '시작';
+let folders = {}, problems = {}, players = {}, sessionActive = false, selectedFolderId = null, currentPlayerNames = [];
+
+// 세션
+onValue(ref(db, 'session'), snap => {
+  const s = snap.val() || {};
+  sessionActive = s.active || false;
+  selectedFolderId = s.selectedFolder || null;
+  document.getElementById('dot').className = 'dot ' + (sessionActive ? 'dot-on' : 'dot-off');
+  document.getElementById('session-txt').textContent = sessionActive ? '진행 중' : '대기 중';
+  document.getElementById('session-btn').textContent = sessionActive ? '종료' : '시작';
+  const info = document.getElementById('session-folder-info');
+  if (sessionActive && selectedFolderId && folders[selectedFolderId]) {
+    info.style.display = '';
+    info.textContent = '현재 폴더: ' + folders[selectedFolderId].name;
+  } else { info.style.display = 'none'; }
 });
 
-window.toggleSession = async () => {
-  const snap = await get(ref(db, 'session/active'));
-  await set(ref(db, 'session/active'), !snap.val());
+window.handleSessionBtn = () => {
+  if (sessionActive) { stopSession(); }
+  else { openFolderModal(); }
 };
 
+async function stopSession() {
+  await set(ref(db, 'session/active'), false);
+  await set(ref(db, 'session/selectedFolder'), null);
+}
+
+// 폴더
+onValue(ref(db, 'folders'), snap => {
+  folders = snap.val() || {};
+  renderFolderList();
+  renderFolderCheckboxes();
+  renderFolderFilter();
+});
+
+function renderFolderList() {
+  const el = document.getElementById('folder-list');
+  const keys = Object.keys(folders);
+  if (!keys.length) { el.innerHTML = '<p class="empty">폴더가 없어요</p>'; return; }
+  el.innerHTML = keys.map(id => {
+    const probCount = Object.values(problems).filter(p => p.folderIds && p.folderIds[id]).length;
+    return `<div class="folder-item">
+      <div>
+        <span class="folder-name">${folders[id].name}</span>
+        <span class="folder-count" style="margin-left:6px">문제 ${probCount}개</span>
+      </div>
+      <button class="danger" onclick="deleteFolder('${id}')">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+function renderFolderCheckboxes() {
+  const el = document.getElementById('folder-checkbox-list');
+  const keys = Object.keys(folders);
+  if (!keys.length) { el.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">먼저 폴더를 만들어주세요</p>'; return; }
+  el.innerHTML = keys.map(id => `
+    <label class="checkbox-item">
+      <input type="checkbox" value="${id}" id="folder-cb-${id}">
+      ${folders[id].name}
+    </label>
+  `).join('');
+}
+
+function renderFolderFilter() {
+  const sel = document.getElementById('filter-folder');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">전체 보기</option>' +
+    Object.entries(folders).map(([id, f]) => `<option value="${id}" ${cur===id?'selected':''}>${f.name}</option>`).join('');
+}
+
+window.addFolder = async () => {
+  const name = document.getElementById('new-folder-name').value.trim();
+  if (!name) return;
+  await push(ref(db, 'folders'), { name });
+  document.getElementById('new-folder-name').value = '';
+};
+
+window.deleteFolder = async (id) => {
+  if (!confirm('폴더를 삭제할까요? 문제는 삭제되지 않아요')) return;
+  await remove(ref(db, 'folders/' + id));
+};
+
+// 문제
 onValue(ref(db, 'problems'), snap => {
-  const data = snap.val() || {};
-  const probs = Object.values(data).sort((a,b) => a.num - b.num);
-  document.getElementById('prob-count').textContent = probs.length + '개';
+  problems = snap.val() || {};
+  renderProblems();
+  renderFolderList();
+  updateProbCount();
+});
+
+function updateProbCount() {
+  document.getElementById('prob-count').textContent = Object.keys(problems).length + '개';
+}
+
+window.renderProblems = () => {
+  const filterFolder = document.getElementById('filter-folder').value;
   const el = document.getElementById('prob-list');
-  if (!probs.length) { el.innerHTML = '<p class="empty">등록된 문제가 없어요</p>'; return; }
-  el.innerHTML = probs.map(p => `
-    <div class="prob-item">
+  let probs = Object.values(problems).sort((a,b) => a.num - b.num);
+  if (filterFolder) probs = probs.filter(p => p.folderIds && p.folderIds[filterFolder]);
+  if (!probs.length) { el.innerHTML = '<p class="empty">문제가 없어요</p>'; return; }
+  el.innerHTML = probs.map(p => {
+    const folderNames = p.folderIds ? Object.keys(p.folderIds).filter(id => folders[id]).map(id => `<span class="folder-tag">${folders[id].name}</span>`).join('') : '';
+    return `<div class="prob-item">
       <span class="prob-num">${p.num}번</span>
       <span class="prob-name">${p.name}</span>
+      <span style="margin-right:4px">${folderNames}</span>
       <span class="badge badge-gray" style="margin-right:4px">정답: ${p.answer}</span>
-      ${p.hint ? `<span class="badge badge-blue" style="margin-right:4px">힌트 있음</span>` : ''}
-      <span class="badge ${p.fileLink ? 'badge-green' : 'badge-gray'}" style="margin-right:4px">${p.fileLink ? '링크 있음' : '링크 없음'}</span>
+      ${p.hint ? `<span class="badge badge-blue" style="margin-right:4px">힌트</span>` : ''}
+      <span class="badge ${p.fileLink ? 'badge-green' : 'badge-gray'}" style="margin-right:4px">${p.fileLink ? '링크있음' : '링크없음'}</span>
       <button class="danger" onclick="deleteProblem('${p.id}')">삭제</button>
-    </div>
-  `).join('');
-});
+    </div>`;
+  }).join('');
+};
 
 window.deleteProblem = async (id) => {
   if (!confirm('삭제할까요?')) return;
   await remove(ref(db, 'problems/' + id));
 };
-
-onValue(ref(db, 'players'), snap => {
-  const data = snap.val() || {};
-  currentPlayerNames = Object.keys(data);
-  const el = document.getElementById('progress-list');
-  const names = Object.keys(data);
-  if (!names.length) { el.innerHTML = '<p class="empty">아직 아무도 없어요</p>'; return; }
-  get(ref(db, 'problems')).then(ps => {
-    const total = ps.val() ? Object.keys(ps.val()).length : 0;
-    el.innerHTML = names.map(name => {
-      const solved = data[name].solved || 0;
-      const pct = (total > 0) ? Math.round(solved / total * 100) : 0;
-      const label = total > 0 ? `${solved}/${total}` : '문제 없음';
-      return `<div class="progress-row">
-        <span class="progress-name">${name}</span>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <span class="bar-label">${label}</span>
-        <button class="msg-btn" onclick="openMsgModal('${name}')">메시지</button>
-      </div>`;
-    }).join('');
-  });
-});
 
 window.addProblem = async () => {
   const num = parseInt(document.getElementById('new-num').value);
@@ -286,28 +387,99 @@ window.addProblem = async () => {
   const ans = document.getElementById('new-ans').value.trim();
   const hint = document.getElementById('new-hint').value.trim();
   const status = document.getElementById('add-status');
-
   if (!num || !name || !ans) { status.className='status-line err'; status.textContent='번호, 이름, 정답은 필수예요'; return; }
+
+  const checkedFolders = {};
+  document.querySelectorAll('#folder-checkbox-list input[type="checkbox"]:checked').forEach(cb => {
+    checkedFolders[cb.value] = true;
+  });
 
   status.className='status-line loading'; status.textContent='저장 중...';
   const id = 'prob_' + num;
   await set(ref(db, 'problems/' + id), {
     id, num, name,
     answer: ans.toLowerCase().replace(/\s/g,''),
-    hint,
-    fileLink: link
+    hint, fileLink: link,
+    folderIds: checkedFolders
   });
-
   document.getElementById('new-num').value='';
   document.getElementById('new-name').value='';
   document.getElementById('new-link').value='';
   document.getElementById('new-ans').value='';
   document.getElementById('new-hint').value='';
+  document.querySelectorAll('#folder-checkbox-list input[type="checkbox"]').forEach(cb => cb.checked = false);
   status.className='status-line ok'; status.textContent=`${num}번 추가됨!`;
   setTimeout(()=>status.textContent='', 2500);
 };
 
-// 메시지 보내기
+// 참여자
+onValue(ref(db, 'players'), snap => {
+  players = snap.val() || {};
+  currentPlayerNames = Object.keys(players);
+  renderProgress();
+});
+
+function renderProgress() {
+  const el = document.getElementById('progress-list');
+  if (!currentPlayerNames.length) { el.innerHTML = '<p class="empty">아직 아무도 없어요</p>'; return; }
+  const folderProbs = selectedFolderId
+    ? Object.values(problems).filter(p => p.folderIds && p.folderIds[selectedFolderId]).sort((a,b)=>a.num-b.num)
+    : [];
+  const total = folderProbs.length;
+  el.innerHTML = currentPlayerNames.map(name => {
+    const solved = players[name].solved || 0;
+    const pct = total > 0 ? Math.round(solved / total * 100) : 0;
+    const label = total > 0 ? `${solved}/${total}` : '대기 중';
+    return `<div class="progress-row">
+      <span class="progress-name">${name}</span>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-label">${label}</span>
+      <button class="msg-btn" onclick="openMsgModal('${name}')">메시지</button>
+    </div>`;
+  }).join('');
+}
+
+// 폴더 선택 모달
+let chosenFolderId = null;
+window.openFolderModal = () => {
+  chosenFolderId = null;
+  const el = document.getElementById('folder-select-list');
+  const keys = Object.keys(folders);
+  if (!keys.length) { alert('폴더가 없어요. 먼저 폴더를 만들어주세요.'); return; }
+  el.innerHTML = keys.map(id => `
+    <div class="folder-select-item" id="fsi-${id}" onclick="selectFolderForSession('${id}')">
+      ${folders[id].name}
+      <span style="font-size:12px;color:var(--text-muted);margin-left:6px">
+        문제 ${Object.values(problems).filter(p=>p.folderIds&&p.folderIds[id]).length}개
+      </span>
+    </div>
+  `).join('');
+  document.getElementById('folder-modal').classList.add('show');
+};
+
+window.selectFolderForSession = (id) => {
+  chosenFolderId = id;
+  document.querySelectorAll('.folder-select-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('fsi-' + id).classList.add('selected');
+};
+
+window.closeFolderModal = () => document.getElementById('folder-modal').classList.remove('show');
+
+window.startSessionWithFolder = async () => {
+  if (!chosenFolderId) { alert('폴더를 선택해주세요'); return; }
+  const folderProbs = Object.values(problems).filter(p => p.folderIds && p.folderIds[chosenFolderId]);
+  if (!folderProbs.length) { alert('이 폴더에 문제가 없어요'); return; }
+  // 모든 플레이어 solved 초기화
+  const ps = await get(ref(db, 'players'));
+  if (ps.val()) {
+    await Promise.all(Object.keys(ps.val()).map(name => set(ref(db, 'players/' + name + '/solved'), 0)));
+  }
+  await set(ref(db, 'session/selectedFolder'), chosenFolderId);
+  await set(ref(db, 'session/active'), true);
+  closeFolderModal();
+};
+
+// 메시지
 let msgTarget = null;
 window.openMsgModal = (name) => {
   msgTarget = name;
@@ -315,9 +487,7 @@ window.openMsgModal = (name) => {
   document.getElementById('msg-modal-input').value = '';
   document.getElementById('msg-modal').classList.add('show');
 };
-window.closeMsgModal = () => {
-  document.getElementById('msg-modal').classList.remove('show');
-};
+window.closeMsgModal = () => document.getElementById('msg-modal').classList.remove('show');
 window.sendDirectMessage = async () => {
   const text = document.getElementById('msg-modal-input').value.trim();
   if (!text || !msgTarget) return;
@@ -333,7 +503,7 @@ window.sendBroadcast = async () => {
   if (!currentPlayerNames.length) { status.className='status-line err'; status.textContent='참여자가 없어요'; return; }
   await Promise.all(currentPlayerNames.map(name => push(ref(db, 'messages/' + name), { text, time: Date.now() })));
   input.value = '';
-  status.className='status-line ok'; status.textContent='전송됨';
+  status.className='status-line ok'; status.textContent='전송됨!';
   setTimeout(()=>status.textContent='', 2000);
 };
 </script>
